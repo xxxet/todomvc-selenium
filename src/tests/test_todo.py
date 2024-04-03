@@ -13,7 +13,6 @@ class TestTodoMvc:
         yield todos
         TodoMvcPage().toggle_todos().clear_completed()
 
-
     def test_add_todo(self, todos_fixture):
         todo_page = TodoMvcPage()
         todo_page.open()

@@ -1,16 +1,11 @@
-
 from autologging import logged
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.remote.webdriver import WebDriver
 from urllib3.exceptions import MaxRetryError
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.core.os_manager import ChromeType
-from webdriver_manager.firefox import GeckoDriverManager
 
 CHROME = 'chrome'
 FIREFOX = 'firefox'
+SAFARI = 'safari'
 
 
 @logged
@@ -62,6 +57,8 @@ class DriverContainer:
             driver = self._configure_local_chrome(self.headless)
         elif self.browser_name == FIREFOX:
             driver = self._configure_local_firefox(self.headless)
+        elif self.browser_name == SAFARI:
+            driver = self._configure_local_safari(self.headless)
         else:
             raise ValueError(f"Browser {self.browser_name} is not supported")
         self.driver = driver
@@ -88,8 +85,6 @@ class DriverContainer:
         )
 
         if not self.headless:
-            # if maximize_window() called in headless mode resolution will be set
-            # to 1366x768
             driver.maximize_window()
         return driver
 
@@ -106,17 +101,25 @@ class DriverContainer:
         )
         return driver
 
+    def _configure_local_safari(self, headless):
+        options = webdriver.SafariOptions()
+        if headless:
+            options.headless = True
+            options.add_argument("-width=1920")
+            options.add_argument("-height=1080")
+        driver = webdriver.Safari(options=options)
+        if not headless:
+            driver.maximize_window()
+        return driver
+
     def _configure_local_firefox(self, headless):
         options = webdriver.FirefoxOptions()
         if headless:
             options.headless = True
             options.add_argument("-width=1920")
             options.add_argument("-height=1080")
-        driver = webdriver.Firefox(
-            service=FirefoxService(GeckoDriverManager().install()), options=options)
+        driver = webdriver.Firefox(options=options)
         if not headless:
-            # if maximize_window() called in headless mode resolution will be set
-            # to 1366x768
             driver.maximize_window()
         return driver
 
@@ -127,7 +130,8 @@ class DriverContainer:
             options.add_argument('window-size=1920,1080')
         else:
             options.add_argument('start-maximized')
-        driver = webdriver.Chrome(service=ChromeService(
-            ChromeDriverManager(chrome_type=ChromeType.GOOGLE).install()),
-            options=options)
+        driver = webdriver.Chrome(options)
+        # driver = webdriver.Chrome(service=ChromeService(
+        #     ChromeDriverManager(chrome_type=ChromeType.GOOGLE).install()),
+        #     options=options)
         return driver
