@@ -1,0 +1,36 @@
+services:
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    container_name: selenoid
+    volumes:
+      - "./conf:/etc/selenoid"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./video:/opt/selenoid/video"
+      - "./logs:/opt/selenoid/logs"
+    environment:
+      - OVERRIDE_VIDEO_OUTPUT_DIR=/Users/dmitrykarpenko/PycharmProjects/todomvc-selenium/video
+    command: [ "-conf", "/etc/selenoid/browsers.json",
+               "-video-output-dir", "/opt/selenoid/video",
+               "-log-output-dir", "/opt/selenoid/logs" ]
+    network_mode: bridge
+    ports:
+      - "4444:4444"
+  selenoid-ui:
+    image: "aerokube/selenoid-ui"
+    network_mode: bridge
+    links:
+      - selenoid
+    ports:
+      - "8086:8080"
+    command: ["--selenoid-uri", "http://selenoid:4444"]
+  ui-tests:
+    build: .
+    volumes:
+      - "./allure-rep:/root/projects/ui-tests/allure-rep"
+    depends_on:
+      - selenoid
+    network_mode: bridge
+    command: pytest --browser=chrome --remote_driver='http://selenoid:4444/wd/hub'
+    links:
+      - "selenoid:hub"
+

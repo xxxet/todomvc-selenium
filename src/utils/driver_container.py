@@ -73,7 +73,11 @@ class DriverContainer:
         self.driver = driver
 
     def _configure_remote_firefox(self):
+        self.__log.info(f"Starting remote firefox: {self.remote_driver}")
         options = webdriver.FirefoxOptions()
+        options.add_argument('sessionTimeout=1m')
+        options.add_argument('enableVideo=true')
+        options.add_argument('enableVNC=true')
         if self.headless:
             options.headless = True
             options.add_argument("-width=1920")
@@ -89,7 +93,12 @@ class DriverContainer:
         return driver
 
     def _configure_remote_chrome(self):
+        self.__log.info(f"Starting remote chrome: {self.remote_driver}")
         options = webdriver.ChromeOptions()
+
+        options.set_capability("selenoid:options", {
+            "enableVideo": True, "enableVNC": True, "sessionTimeout": "3m", "enableLog": True
+        })
         if self.headless:
             options.add_argument('--headless')
             options.add_argument('window-size=1920,1080')
