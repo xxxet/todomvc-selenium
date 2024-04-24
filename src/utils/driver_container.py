@@ -5,6 +5,7 @@ from selenium.webdriver.common.options import ArgOptions
 from urllib3.exceptions import MaxRetryError
 
 CHROME = 'chrome'
+CHROMIUM = 'chromium'
 FIREFOX = 'firefox'
 SAFARI = 'safari'
 
@@ -54,7 +55,7 @@ class DriverContainer:
             self._configure_local_browser()
 
     def _configure_local_browser(self):
-        if self.browser_name == CHROME:
+        if self.browser_name == CHROME or self.browser_name == CHROMIUM:
             driver = self._configure_local_chrome(self.headless)
         elif self.browser_name == FIREFOX:
             driver = self._configure_local_firefox(self.headless)
@@ -75,8 +76,10 @@ class DriverContainer:
 
     def _config_for_docker_hub(self, options: ArgOptions):
         pass
-        # options.add_argument('se:recordVideo=false')
-        # options.add_argument('se:screenResolution=1920x1080')
+        options.set_capability("se:recordVideo", "true")
+        options.set_capability("se:screenResolution", "1920x1080")
+        # options.add_argument('se:recordVideo=true')
+        # options.add_argument('se:screenResolution=1024x768')
 
 
     def _configure_remote_firefox(self):
