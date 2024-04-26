@@ -7,3 +7,4 @@ src/tests/allure-results
 geckodriver.log
 src/tests/geckodriver.log
 .idea/*
+`

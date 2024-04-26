@@ -1,7 +1,7 @@
 from autologging import logged
 from selenium import webdriver
-from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.options import ArgOptions
+from selenium.webdriver.remote.webdriver import WebDriver
 from urllib3.exceptions import MaxRetryError
 
 CHROME = 'chrome'
@@ -75,12 +75,8 @@ class DriverContainer:
         self.driver = driver
 
     def _config_for_docker_hub(self, options: ArgOptions):
-        pass
         options.set_capability("se:recordVideo", "true")
         options.set_capability("se:screenResolution", "1920x1080")
-        # options.add_argument('se:recordVideo=true')
-        # options.add_argument('se:screenResolution=1024x768')
-
 
     def _configure_remote_firefox(self):
         self.__log.info(f"Starting remote firefox: {self.remote_driver}")
