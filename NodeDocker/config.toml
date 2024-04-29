@@ -2,8 +2,8 @@
 # Configs have a mapping between the Docker image to use and the capabilities that need to be matched to
 # start a container with the given image.
 configs = [
-    "seleniarm/standalone-firefox:124.0-geckodriver-0.34", '{"browserName": "firefox"}',
-    "seleniarm/standalone-chromium:123.0-chromedriver-123.0", '{"browserName": "chrome"}'
+    "seleniarm/standalone-firefox:125.0", '{"browserName": "firefox"}',
+    "seleniarm/standalone-chromium:124.0", '{"browserName": "chrome"}'
 ]
 
 # URL for connecting to the docker daemon
