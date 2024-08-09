@@ -5,6 +5,8 @@ src/tests/allure-results
 __pycache__
 assets
 .idea
+allure*
+logs
 .DS_Store
 tests/__pycache__
 geckodriver.log
