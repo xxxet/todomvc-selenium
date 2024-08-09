@@ -1,6 +1,5 @@
 pytest==8.1.1
 selenium==4.19.0
-webdriver_manager==4.0.1
 allure-pytest==2.13.4
 pytest-rerunfailures==14.0
 pytest-xdist==3.5.0

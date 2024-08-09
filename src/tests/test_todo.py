@@ -13,37 +13,26 @@ class TestTodoMvc:
 
     @pytest.fixture
     def todos_fixture(self):
-        todos = ["My todo1", "My todo2", "My todo3"]
+        todos = [["My todo1", False], ["My todo2", False], ["My todo3", False]]
         yield todos
         TodoMvcPage().toggle_todos().clear_completed()
 
-    # @pytest.mark.repeat(2)
     def test_add_todo_fail(self, todos_fixture):
-        self.__log.info('Open TodoMvcPage')
         todo_page = TodoMvcPage()
         todo_page.open()
-        self.__log.info('Type todos')
         for todo in todos_fixture:
-            todo_page.type_todo(todo)
-            self.__log.info('Mark todo done')
-        todo_page.mark_todo_done({todos_fixture[0]: False})
-        self.__log.info('Get created todos')
+            todo_page.create_todo(*todo)
+        todo_page.mark_todo_done(*todos_fixture[0])
         todos = todo_page.get_created_todos()
-        self.__log.info('assert todos')
-        assert_that(todos).is_equal_to([{todos_fixture[0]: False}] + [{todo: False} for todo in todos_fixture[1:]])
+        assert_that(todos).is_equal_to(todos_fixture)
 
-    # @pytest.mark.repeat(2)
     def test_add_todo(self, todos_fixture):
-        self.__log.info('Open TodoMvcPage')
         todo_page = TodoMvcPage()
         todo_page.open()
-        self.__log.info('Type todos')
         for todo in todos_fixture:
-            todo_page.type_todo(todo)
-            self.__log.info('Mark todo done')
-        todo_page.mark_todo_done({todos_fixture[0]: False})
-        self.__log.info('Get created todos')
+            todo_page.create_todo(*todo)
+        todo_page.mark_todo_done(*todos_fixture[0])
         todos = todo_page.get_created_todos()
-        self.__log.info('assert todos')
+        assert_that(todos).is_equal_to([[todos_fixture[0][0], True]] + todos_fixture[1:])
 
 

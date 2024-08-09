@@ -22,6 +22,7 @@ class TodoMvcPage(BasePage):
 
     @allure.step
     def open(self):
+        self.__log.info('Open TodoMvcPage')
         self.driver_container.driver.get(self.driver_container.base_url)
         self.has_loaded()
 
@@ -32,10 +33,13 @@ class TodoMvcPage(BasePage):
         return self
 
     @allure.step
-    def type_todo(self, text):
+    def create_todo(self, text, status):
+        self.__log.info('Type todo: ' + text)
         BaseElement(self.todo_input) \
             .type(text) \
             .type_return()
+        if status is True:
+            self.mark_todo_done(text, False)
         return self
 
     def _get_todo_els(self):
@@ -43,8 +47,9 @@ class TodoMvcPage(BasePage):
 
     @allure.step
     def get_created_todos(self):
+        self.__log.info('Get created todos')
         todo_lines = self._get_todo_els()
-        self.created_todos = [{line.text: line.find_element(*self.toggle_todo).is_selected()} for line in todo_lines]
+        self.created_todos = [[line.text, line.find_element(*self.toggle_todo).is_selected()] for line in todo_lines]
         return self.created_todos
 
     def get_todo_names(self):
@@ -52,16 +57,17 @@ class TodoMvcPage(BasePage):
         return [name for todo in todos for name in todo]
 
     @allure.step
-    def mark_todo_done(self, todo):
+    def mark_todo_done(self, name, status):
+        self.__log.info('Mark todo done: ' + name)
         self.get_created_todos()
-        index_of = self.created_todos.index(todo)
+        index_of = self.created_todos.index([name, status])
         self._get_todo_els()[index_of].find_element(*self.toggle_todo).click()
         return self
 
     @allure.step
-    def delete_todo(self, todo):
+    def delete_todo(self, name, status):
         self.get_created_todos()
-        index_of = self.get_todo_names().index(todo)
+        index_of = self.get_todo_names().index([name, status])
         self._get_todo_els()[index_of].find_element(*self.delete_todo_btn).click()
 
     @allure.step
