@@ -23,9 +23,15 @@ rerun failed test 2 times, see pytest-rerunfailures for more params:
 	--reruns 2 
 ```
 
-Run tests in selenium docker with dynamic grid:
+Run tests in selenoid with docker compose
 ``` 
-./run_in_docker.sh
+download chrome container:
+docker pull selenoid/vnc_chrome:127.0 
+run selenoid and tests with compose
+docker compose up 
+
+run tests on selenoid instance:
+pytest --browser=chrome  --remote_driver=http://localhost:4444/wd/hub  --alluredir=./allure-results 
 ```
 
 Examples:
